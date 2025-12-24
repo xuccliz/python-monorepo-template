@@ -1,0 +1,120 @@
+version: "3"
+
+tasks:
+  # ========================================
+  # Default & Setup
+  # ========================================
+  default:
+    desc: List available tasks
+    cmds:
+      - task --list
+
+  setup:
+    desc: Initial project docker setup (clean + install)
+    cmds:
+      - task: clean
+      - task: build
+
+  # ========================================
+  # Docker Services
+  # ========================================
+  build:
+    desc: Build Docker images
+    cmds:
+      - docker compose build
+
+  up:
+    desc: Start all services with Docker Compose
+    cmds:
+      - docker compose up --build -d
+
+  down:
+    desc: Stop and remove containers
+    cmds:
+      - docker compose down --remove-orphans
+
+  stop:
+    desc: Stop containers (keeps containers + volumes)
+    cmds:
+      - docker compose stop
+
+  restart:
+    desc: Restart containers
+    cmds:
+      - docker compose restart
+
+  ps:
+    desc: Show service status
+    cmds:
+      - docker compose ps
+
+  # ========================================
+  # Logs
+  # ========================================
+  logs:
+    desc: Follow logs for all services
+    cmds:
+      - docker compose logs -f --tail=2000
+
+  # ========================================
+  # Testing
+  # ========================================
+  test:local:
+    desc: Run all tests locally (no Docker)
+    cmds:
+      - uv run pytest {{.CLI_ARGS}}
+
+  # ========================================
+  # Formatting
+  # ========================================
+  format:
+    desc: Format and lint all code (Python + TypeScript + file checks)
+    cmds:
+      # Basic file checks
+      - cmd: uv run pre-commit run trailing-whitespace --all-files
+        ignore_error: true
+      - cmd: uv run pre-commit run end-of-file-fixer --all-files
+        ignore_error: true
+      - cmd: uv run pre-commit run check-yaml --all-files
+        ignore_error: true
+      - cmd: uv run pre-commit run check-json --all-files
+        ignore_error: true
+      - cmd: uv run pre-commit run check-added-large-files --all-files
+        ignore_error: true
+      # Python formatting and linting
+      - cmd: uv run ruff format packages/
+        ignore_error: true
+      - cmd: uv run ruff check packages/ --fix
+        ignore_error: true
+      - cmd: uv run pyright packages/
+        ignore_error: true
+      # Unused code detection
+      - cmd: uv run vulture packages/
+        ignore_error: true
+
+
+  # ========================================
+  # Cleanup
+  # ========================================
+  clean:
+    desc: Complete Docker cleanup (containers + volumes + images + networks)
+    cmds:
+      - echo "⚠️  WARNING - This will remove ALL containers, volumes, images, and networks for this project"
+      - docker compose down -v --rmi all --remove-orphans
+      - echo "✅ Docker cleanup complete"
+
+  clean:local:
+    desc: Clean local development artifacts (cache, build files, etc.)
+    cmds:
+      - find packages -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+      - find packages -type d -name "*.egg-info" -exec rm -rf {} + 2>/dev/null || true
+      - find packages -type d -name ".pytest_cache" -exec rm -rf {} + 2>/dev/null || true
+      - find packages -type d -name ".ruff_cache" -exec rm -rf {} + 2>/dev/null || true
+      - find packages -type d -name "node_modules" -exec rm -rf {} + 2>/dev/null || true
+      - find packages -type d -name "dist" -exec rm -rf {} + 2>/dev/null || true
+      - find packages -type f -name "*.pyo" -delete 2>/dev/null || true
+      - find packages -type f -name "*.pyc" -delete 2>/dev/null || true
+      - find packages -type f -name "*.tsbuildinfo" -delete 2>/dev/null || true
+      - rm -rf logs/*.log 2>/dev/null || true
+      - rm -rf .pnpm-debug.log 2>/dev/null || true
+      - echo "Local artifacts cleaned"

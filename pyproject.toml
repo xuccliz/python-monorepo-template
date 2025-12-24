@@ -1,0 +1,66 @@
+[project]
+name = "stockpredator"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "domain",
+    "store",
+    "modeler",
+    "listener",
+    "vulture>=2.14",
+]
+
+[tool.uv.workspace]
+members = [
+    "packages/trader",
+    "packages/modeler",
+    "packages/listener",
+    "packages/domain",
+    "packages/store",
+]
+
+[tool.uv.sources]
+trader = { workspace = true }
+modeler = { workspace = true }
+listener = { workspace = true }
+domain = { workspace = true }
+store = { workspace = true }
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+extend-exclude = ["node_modules", "dist", ".venv", "__pycache__"]
+
+[tool.ruff.lint]
+select = ["E", "F", "B", "I", "N", "UP"]
+ignore = [
+    "D",      # Ignore docstring requirements
+    "N803",   # Argument name should be lowercase (allow F, K, T for finance notation)
+    "N806",   # Variable in function should be lowercase (allow F, K, T for finance notation)
+]
+
+[tool.pyright]
+include = ["packages"]
+exclude = ["**/node_modules", "**/dist", "**/__pycache__", "**/notebooks"]
+executionEnvironments = [
+  { root = "packages/trader" },
+  { root = "packages/modeler" },
+  { root = "packages/listener" },
+  { root = "packages/domain" },
+  { root = "packages/store" },
+]
+typeCheckingMode = "standard"
+pythonVersion = "3.12"
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra --import-mode=importlib"
+testpaths = ["packages/*/tests"]
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.380",
+    "ruff>=0.1.0",
+    "pre-commit>=4.5.1",
+    "pytest>=9.0.2",
+]

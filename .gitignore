@@ -1,0 +1,78 @@
+# Environment variables
+.env
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.installed.cfg
+
+# Node
+node_modules/
+.pnpm-store/
+.pnpm
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.hypothesis/
+.coverage
+htmlcov/
+*.cover
+
+# Type checking
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
+
+# Databases
+*.db
+*.db*
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+pids.txt
+
+# TypeScript build artifacts
+*.tsbuildinfo
+packages/listener/dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# AI
+.agent/
