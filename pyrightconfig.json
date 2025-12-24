@@ -1,0 +1,13 @@
+{
+  "extraPaths": [
+    "packages/lab"
+  ],
+  "exclude": [
+    "**/*.ipynb",
+    "**/notebooks/",
+    "**/__pycache__",
+    "**/node_modules",
+    "**/.venv",
+    "**/venv"
+  ]
+}

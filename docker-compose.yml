@@ -1,0 +1,29 @@
+services:
+  trader:
+    build:
+      context: .
+      dockerfile: packages/trader/Dockerfile
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    secrets:
+      - DISCORD_WEBHOOK_URL
+      - MASSIVE_API_KEY
+      - POLYMARKET_API_KEY
+      - POLYMARKET_WALLET
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "packages/trader/scripts/health.py"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+secrets:
+  DISCORD_WEBHOOK_URL:
+    file: ./secrets/DISCORD_WEBHOOK_URL
+  MASSIVE_API_KEY:
+    file: ./secrets/MASSIVE_API_KEY
+  POLYMARKET_API_KEY:
+    file: ./secrets/POLYMARKET_API_KEY
+  POLYMARKET_WALLET:
+    file: ./secrets/POLYMARKET_WALLET
